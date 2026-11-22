@@ -34,8 +34,12 @@ function copyTree(source, target) {
 
 // A deterministic hand-in: start from a clean output directory so stale
 // files from an earlier run can never leak into the dossier.
-rmSync(outputDir, { recursive: true, force: true });
+// Never remove the output directory itself: in the grader it is a mount
+// whose parent is read-only, so only clear what sits inside it.
 mkdirSync(outputDir, { recursive: true });
+for (const name of readdirSync(outputDir)) {
+  rmSync(join(outputDir, name), { recursive: true, force: true });
+}
 
 const gameSource = join(repoRoot, 'game');
 const shotsSource = join(repoRoot, 'screenshots');
