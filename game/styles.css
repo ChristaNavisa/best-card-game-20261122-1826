@@ -1,0 +1,176 @@
+/* Ember Harbor — table, cards and overlays. All art is CSS/SVG, no network. */
+:root {
+  --ink: #f4ead8;
+  --ink-dim: #c9bfa8;
+  --felt: #14342b;
+  --felt-deep: #0c241e;
+  --wood: #6b4423;
+  --gold: #f2c14e;
+  --ember: #e4572e;
+  --tide: #2e86e4;
+  --gale: #2fa36b;
+  --ore: #d9a441;
+  --card-w: 118px;
+  --card-h: 168px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: radial-gradient(1200px 700px at 50% -10%, #1d4a3c, var(--felt-deep) 70%);
+  color: var(--ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  overflow: hidden;
+}
+#app { height: 100vh; display: flex; flex-direction: column; }
+#topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 18px; background: rgba(0,0,0,.35); border-bottom: 2px solid #8a6d3b;
+  font-family: 'Trebuchet MS', sans-serif; letter-spacing: .12em;
+}
+.brand { font-weight: 800; font-size: 18px; color: var(--gold); }
+.brand-mark { margin-right: 6px; }
+.top-meta { display: flex; gap: 22px; font-size: 14px; color: var(--ink-dim); }
+.top-meta span { color: var(--ink); font-weight: 700; }
+#table { flex: 1; display: flex; flex-direction: column; padding: 10px 22px 14px; gap: 6px; min-height: 0; }
+.zone { display: flex; flex-direction: column; gap: 6px; }
+.captain { display: flex; gap: 14px; align-items: center; background: rgba(0,0,0,.28);
+  border: 1px solid rgba(242,193,78,.35); border-radius: 12px; padding: 8px 14px; }
+.portrait {
+  width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 900; font-family: 'Trebuchet MS', sans-serif; flex: none;
+  border: 3px solid var(--gold);
+}
+.foe-portrait { background: linear-gradient(145deg, #274b8f, #122a55); color: #bcd6ff; }
+.you-portrait { background: linear-gradient(145deg, #8a3b1d, #4d1f0e); color: #ffd9a8; }
+.captain-info { flex: 1; min-width: 0; }
+.captain-name { font-size: 17px; font-weight: 800; letter-spacing: .04em; }
+.captain-tag { font-size: 12px; color: var(--ink-dim); font-weight: 400; margin-left: 6px; }
+.meters { display: flex; gap: 18px; margin-top: 5px; align-items: center; flex-wrap: wrap; }
+.meter { display: flex; gap: 7px; align-items: center; font-family: 'Trebuchet MS', sans-serif; }
+.meter-label { font-size: 11px; letter-spacing: .14em; color: var(--ink-dim); }
+.bar { width: 130px; height: 12px; background: rgba(255,255,255,.14); border-radius: 6px; overflow: hidden; }
+.fill { height: 100%; transition: width .45s ease; }
+.hull-fill { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+.shield-fill { background: linear-gradient(90deg, #2e86e4, #7fb5f0); }
+.meter-num { font-weight: 800; font-size: 15px; min-width: 22px; text-align: right; }
+.meter-num.big { font-size: 19px; color: var(--gold); }
+.intent {
+  font-style: italic; color: #ffd9a8; background: rgba(228,87,46,.16);
+  border: 1px dashed rgba(242,193,78,.5); border-radius: 8px; padding: 7px 10px;
+  font-size: 13.5px; max-width: 300px;
+}
+.you-hint { background: rgba(47,163,107,.14); border-color: rgba(47,163,107,.55); color: #c9f0da; }
+.hand { display: flex; gap: 10px; justify-content: center; min-height: calc(var(--card-h) + 8px); padding: 4px 0; }
+.foe-hand .card { transform: rotate(-2deg); }
+.card {
+  width: var(--card-w); height: var(--card-h); border-radius: 10px; position: relative;
+  background: linear-gradient(160deg, #fff8e7, #f0dfb8);
+  color: #241a10; border: 2px solid #8a6d3b; box-shadow: 0 4px 10px rgba(0,0,0,.45);
+  cursor: pointer; user-select: none; flex: none;
+  transition: transform .18s ease, box-shadow .18s ease, opacity .3s ease;
+  animation: dealIn .35s ease backwards;
+}
+@keyframes dealIn { from { transform: translateY(26px) scale(.92); opacity: 0; } }
+.card:hover { transform: translateY(-10px) rotate(-1deg); box-shadow: 0 12px 18px rgba(0,0,0,.55); }
+.card.unaffordable { opacity: .55; filter: grayscale(.5); cursor: not-allowed; }
+.card.unaffordable:hover { transform: none; box-shadow: 0 4px 10px rgba(0,0,0,.45); }
+.card .cost {
+  position: absolute; top: 6px; left: 6px; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--gold); border: 2px solid #8a6d3b; color: #241a10;
+  display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 17px;
+  font-family: 'Trebuchet MS', sans-serif; z-index: 2;
+}
+.card .guild-band {
+  position: absolute; top: 0; left: 0; right: 0; height: 26px; border-radius: 8px 8px 0 0;
+  display: flex; align-items: center; justify-content: flex-end; padding-right: 8px;
+  color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .12em; font-family: 'Trebuchet MS', sans-serif;
+  text-transform: uppercase;
+}
+.card.guild-ember .guild-band { background: var(--ember); }
+.card.guild-tide .guild-band { background: var(--tide); }
+.card.guild-gale .guild-band { background: var(--gale); }
+.card.guild-ore .guild-band { background: var(--ore); color: #241a10; }
+.card .art { position: absolute; top: 34px; left: 50%; transform: translateX(-50%); width: 64px; height: 64px; }
+.card .art svg { width: 100%; height: 100%; }
+.card .name { position: absolute; top: 102px; left: 0; right: 0; text-align: center; font-weight: 800; font-size: 14.5px; }
+.card .kind { position: absolute; top: 122px; left: 0; right: 0; text-align: center; font-size: 11px;
+  letter-spacing: .14em; text-transform: uppercase; color: #7a6a4d; font-family: 'Trebuchet MS', sans-serif; }
+.card .power {
+  position: absolute; bottom: 6px; right: 6px; min-width: 34px; height: 30px; padding: 0 6px; border-radius: 15px;
+  background: #241a10; color: var(--gold); display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 16px; font-family: 'Trebuchet MS', sans-serif;
+}
+.card .flavor { position: absolute; bottom: 8px; left: 8px; font-size: 10.5px; font-style: italic; color: #7a6a4d; max-width: 66px; line-height: 1.15; }
+.card.back {
+  background: repeating-linear-gradient(45deg, #274b8f 0 10px, #1d3a6e 10px 20px);
+  border-color: #bcd6ff; cursor: default;
+}
+.card.back::after {
+  content: "✦"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 34px; color: rgba(255,255,255,.75);
+}
+.card.back:hover { transform: none; box-shadow: 0 4px 10px rgba(0,0,0,.45); }
+.card.played { animation: playCard .4s ease; }
+@keyframes playCard { 0% { transform: translateY(0) scale(1); } 50% { transform: translateY(-22px) scale(1.08); } 100% { transform: translateY(0) scale(1); } }
+#midZone { display: flex; align-items: center; gap: 14px; min-height: 86px; }
+.log { flex: 1; font-size: 13.5px; line-height: 1.45; color: var(--ink-dim); max-height: 86px; overflow: hidden; }
+.log b { color: var(--ink); }
+.log .good { color: #8fd6a8; } .log .bad { color: #f0a08a; } .log .gold { color: var(--gold); }
+.combo-banner {
+  position: absolute; left: 50%; top: 42%; transform: translate(-50%,-50%) rotate(-3deg);
+  background: var(--gold); color: #241a10; font-weight: 900; font-size: 22px; letter-spacing: .06em;
+  padding: 10px 22px; border-radius: 12px; border: 3px solid #8a6d3b; box-shadow: 0 8px 24px rgba(0,0,0,.6);
+  z-index: 30; animation: popIn .3s ease; font-family: 'Trebuchet MS', sans-serif;
+}
+@keyframes popIn { from { transform: translate(-50%,-50%) scale(.6); opacity: 0; } }
+.hidden { display: none !important; }
+.played-row { display: flex; gap: 8px; min-width: 180px; justify-content: center; }
+.played-row .card { width: 84px; height: 120px; cursor: default; animation: playCard .4s ease; }
+.played-row .card:hover { transform: none; }
+.played-row .card .art { width: 44px; height: 44px; top: 28px; }
+.played-row .card .name { top: 76px; font-size: 11.5px; }
+.played-row .card .kind, .played-row .card .flavor { display: none; }
+.played-row .card .power { min-width: 26px; height: 22px; font-size: 13px; }
+.mid-actions { display: flex; flex-direction: column; gap: 8px; }
+.btn {
+  font-family: 'Trebuchet MS', sans-serif; font-weight: 800; letter-spacing: .05em;
+  border: 2px solid var(--gold); border-radius: 10px; padding: 10px 16px; cursor: pointer;
+  background: var(--gold); color: #241a10; font-size: 14px;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: rgba(244,234,216,.5); }
+.btn.big { font-size: 18px; padding: 14px 28px; }
+.overlay {
+  position: fixed; inset: 0; background: rgba(6,18,14,.82); backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center; z-index: 50;
+}
+.title-card {
+  max-width: 640px; width: calc(100% - 40px); text-align: center; padding: 34px 30px;
+  background: linear-gradient(170deg, #173b2f, #0c241e); border: 2px solid var(--gold); border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.7);
+}
+.title-kicker { letter-spacing: .3em; font-size: 12px; color: var(--gold); font-family: 'Trebuchet MS', sans-serif; font-weight: 800; }
+.title-card h1 { font-size: 64px; line-height: .95; margin: 12px 0; color: var(--ink); text-shadow: 0 4px 0 rgba(0,0,0,.4); letter-spacing: .02em; }
+.title-sub { font-size: 16.5px; line-height: 1.5; color: var(--ink-dim); margin-bottom: 16px; }
+.guild-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+.guild-chip {
+  display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 20px;
+  font-family: 'Trebuchet MS', sans-serif; font-size: 13px; font-weight: 800; color: #fff;
+}
+.guild-chip svg { width: 18px; height: 18px; }
+.guild-chip.ember { background: var(--ember); } .guild-chip.tide { background: var(--tide); }
+.guild-chip.gale { background: var(--gale); } .guild-chip.ore { background: var(--ore); color: #241a10; }
+.title-how { margin-top: 18px; font-size: 13.5px; line-height: 1.55; color: var(--ink-dim); text-align: left; }
+.title-how b { color: var(--gold); }
+.end-score { display: flex; gap: 12px; justify-content: center; margin: 6px 0 20px; flex-wrap: wrap; }
+.end-score .stat { background: rgba(0,0,0,.35); border: 1px solid rgba(242,193,78,.4); border-radius: 10px; padding: 10px 16px; }
+.end-score .stat b { display: block; font-size: 24px; color: var(--gold); font-family: 'Trebuchet MS', sans-serif; }
+.end-score .stat span { font-size: 12px; letter-spacing: .12em; color: var(--ink-dim); font-family: 'Trebuchet MS', sans-serif; }
+#endTitle.lost { color: #f0a08a; }
+#endTitle.won { color: var(--gold); }
+@media (max-width: 900px) {
+  :root { --card-w: 92px; --card-h: 132px; }
+  .bar { width: 84px; }
+  .title-card h1 { font-size: 44px; }
+}

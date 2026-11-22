@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember Harbor — Duel of the Four Guilds</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <div class="brand"><span class="brand-mark">⚓</span> EMBER HARBOR</div>
+    <div class="top-meta"><span id="roundLabel">Round 1</span><span id="scoreLabel">Score 0</span></div>
+  </header>
+
+  <main id="table">
+    <section id="foeZone" class="zone">
+      <div class="captain foe">
+        <div class="portrait foe-portrait" aria-label="Captain Vex">V</div>
+        <div class="captain-info">
+          <div class="captain-name">Captain Vex <span class="captain-tag">Rival of the Tide</span></div>
+          <div class="meters">
+            <div class="meter hull"><span class="meter-label">HULL</span><div class="bar"><div id="foeHullBar" class="fill hull-fill"></div></div><span id="foeHullText" class="meter-num">30</span></div>
+            <div class="meter shield"><span class="meter-label">SHIELD</span><div class="bar"><div id="foeShieldBar" class="fill shield-fill"></div></div><span id="foeShieldText" class="meter-num">0</span></div>
+            <div class="meter coins"><span class="meter-label">COINS</span><span id="foeCoinsText" class="meter-num big">3</span></div>
+          </div>
+        </div>
+        <div id="foeIntent" class="intent">Vex is sizing you up…</div>
+      </div>
+      <div id="foeHand" class="hand foe-hand" aria-label="Opponent hand"></div>
+    </section>
+
+    <section id="midZone">
+      <div id="log" class="log" aria-live="polite"></div>
+      <div id="comboBanner" class="combo-banner hidden"></div>
+      <div id="playedRow" class="played-row"></div>
+      <div class="mid-actions">
+        <button id="endTurnBtn" class="btn primary">End Turn — Let Vex Play</button>
+        <button id="restartBtn" class="btn ghost">Restart Duel</button>
+      </div>
+    </section>
+
+    <section id="youZone" class="zone">
+      <div id="youHand" class="hand you-hand" aria-label="Your hand"></div>
+      <div class="captain you">
+        <div class="portrait you-portrait" aria-label="You">Y</div>
+        <div class="captain-info">
+          <div class="captain-name">You <span class="captain-tag">Captain of Ember Harbor</span></div>
+          <div class="meters">
+            <div class="meter hull"><span class="meter-label">HULL</span><div class="bar"><div id="youHullBar" class="fill hull-fill"></div></div><span id="youHullText" class="meter-num">30</span></div>
+            <div class="meter shield"><span class="meter-label">SHIELD</span><div class="bar"><div id="youShieldBar" class="fill shield-fill"></div></div><span id="youShieldText" class="meter-num">0</span></div>
+            <div class="meter coins"><span class="meter-label">COINS</span><span id="youCoinsText" class="meter-num big">3</span></div>
+          </div>
+        </div>
+        <div id="youHint" class="intent you-hint">Click a card to play it. Same guild twice = Guild Surge!</div>
+      </div>
+    </section>
+  </main>
+
+  <div id="titleScreen" class="overlay">
+    <div class="title-card">
+      <div class="title-kicker">A CARD DUEL OF THE FOUR GUILDS</div>
+      <h1>EMBER<br>HARBOR</h1>
+      <p class="title-sub">Out-trade, out-bluff and out-gun Captain Vex on the lantern-lit docks.
+        Play guild cards, chain combos, and sink your rival's hull to 0.</p>
+      <div class="guild-row" id="titleGuilds"></div>
+      <button id="playBtn" class="btn primary big">⚓ Set Sail — Play</button>
+      <p class="title-how">How to play: each round you earn coins and draw to 5 cards. Click a card to play it if you can afford it.
+        Two cards of the same guild in one turn trigger a <b>Guild Surge</b> (+2). Costs 1 → 2 → 3 in one turn trigger a <b>Chain</b> (draw 1).
+        Watch Vex's intent — then counter it. First hull to 0 loses.
+        Vex is a veteran: he starts with an extra coin and earns one more each round.</p>
+    </div>
+  </div>
+
+  <div id="endScreen" class="overlay hidden">
+    <div class="title-card end-card">
+      <div id="endKicker" class="title-kicker">THE DUEL IS OVER</div>
+      <h1 id="endTitle">VICTORY</h1>
+      <p id="endText" class="title-sub"></p>
+      <div id="endScore" class="end-score"></div>
+      <button id="againBtn" class="btn primary big">⚓ Duel Again</button>
+    </div>
+  </div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
